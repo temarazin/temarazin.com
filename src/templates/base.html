@@ -2,11 +2,16 @@
 <html lang="en">
   <head>
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <%= htmlWebpackPlugin.options.head %>
+    <%= require('html-loader!../chunks/head.html').default %>
   </head>
   <body>
-    <header><%= htmlWebpackPlugin.options.menu %></header>
+    <header>
+      <h1>Artem Malyshev</h1>
+      <%= require('html-loader!../chunks/menu.html').default %>
+    </header>
     <main><%= htmlWebpackPlugin.options.content %></main>
-    <footer><%= htmlWebpackPlugin.options.footer %></footer>
+    <footer>
+      <%= require('html-loader!../chunks/footer.html').default %>
+    </footer>
   </body>
 </html>

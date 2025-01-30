@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const fs = require("fs");
 const MarkdownIt = require("markdown-it");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const matter = require("gray-matter");
 
 const md = new MarkdownIt();
 
@@ -14,6 +16,13 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
     clean: true,
+  },
+  devServer: {
+    static: path.resolve(__dirname, './dist'),
+    compress: true,
+    hot: true, // Enable Hot Module Replacement
+    port: 8080,
+    open: true
   },
   module: {
     rules: [
@@ -35,25 +44,23 @@ module.exports = {
         },
         'postcss-loader']
       },
+
     ],
   },
   plugins: [
-    // Dynamically create HTML files for each Markdown file
+    new CleanWebpackPlugin(),
     ...fs.readdirSync("./src/content").map((file) => {
-      const content = fs.readFileSync(`./src/content/${file}`, "utf8");
+      const mdContent = fs.readFileSync(`./src/content/${file}`, "utf8");
+      const { data, content } = matter(mdContent); // Extract metadata and content
       const htmlContent = md.render(content);
       return new HtmlWebpackPlugin({
         filename: file.replace(".md", ".html"),
-        template: "./src/templates/base.html", // Use the base template
-        // inject: false,
-        title: file.replace(".md", ""), // Dynamic title based on the file name
-        head: loadTemplate("./src/templates/head.html"),
-        menu: loadTemplate("./src/templates/menu.html"),
-        footer: loadTemplate("./src/templates/footer.html"),
+        template: `./src/templates/${data.template || "base"}.html`,
+        title: data.title || file.replace(".md", ""), // Dynamic title based on the file name
         content: htmlContent, // Rendered Markdown content
       });
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
   ],
   mode: "production",
 };
