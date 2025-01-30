@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack",
     "start": "npx webpack serve",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
