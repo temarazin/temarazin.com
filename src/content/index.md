@@ -6,4 +6,4 @@ title: Home Page
 
 # Welcome to My Home page
 
-Hello there! Poom-Poom-Poom
+Hello there!
