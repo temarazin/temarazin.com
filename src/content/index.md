@@ -4,6 +4,6 @@ title: Home Page
 ---
 
 
-# Welcome to My Home page
+## Welcome to My Home page
 
-Hello there!
+Hello there! This a main page.
