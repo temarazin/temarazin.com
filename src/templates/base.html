@@ -6,11 +6,13 @@
   </head>
   <body>
     <header class="header">
-      <h1>Artem Malyshev</h1>
+      <h1>Work in progress</h1>
       <%= require('html-loader!../chunks/menu.html').default %>
     </header>
     <main><%= htmlWebpackPlugin.options.content %></main>
     <footer>
+      <%= foo %>
+      <include src="../chunks/footer.html"/>
       <%= require('html-loader!../chunks/footer.html').default %>
     </footer>
   </body>

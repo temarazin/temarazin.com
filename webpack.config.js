@@ -9,6 +9,9 @@ const matter = require("gray-matter");
 const md = new MarkdownIt();
 
 const loadTemplate = (filePath) => fs.readFileSync(path.resolve(__dirname, filePath), "utf8");
+const INCLUDE_PATTERN = /\<include src=\"(.+)\"\/?\>(?:\<\/include\>)?/gi;
+const processNestedHtml = (content, loaderContext) => !INCLUDE_PATTERN.test(content) ?
+  content : content.replace(INCLUDE_PATTERN, (m, src) => processNestedHtml(fs.readFileSync(path.resolve(loaderContext.context, src), 'utf8'), loaderContext));
 
 module.exports = {
   entry: "./src/index.js",
@@ -16,7 +19,7 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
     clean: true,
-    publicPath: './'
+    publicPath: ''
   },
   devServer: {
     static: path.resolve(__dirname, './dist'),
@@ -45,6 +48,15 @@ module.exports = {
         },
         'postcss-loader']
       },
+      {
+        test: /\.html$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            preprocessor: processNestedHtml
+          }
+        }
+      }
 
     ],
   },
@@ -59,6 +71,9 @@ module.exports = {
         template: `./src/templates/${data.template || "base"}.html`,
         title: data.title || file.replace(".md", ""), // Dynamic title based on the file name
         content: htmlContent, // Rendered Markdown content
+        templateParameters: {
+          foo: "bar",
+        },
       });
     }),
     new MiniCssExtractPlugin(),
