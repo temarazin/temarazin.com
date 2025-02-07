@@ -1,82 +1,81 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
 const fs = require("fs");
+const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const MarkdownIt = require("markdown-it");
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const matter = require("gray-matter");
+const Handlebars = require("handlebars")
 
 const md = new MarkdownIt();
 
-const loadTemplate = (filePath) => fs.readFileSync(path.resolve(__dirname, filePath), "utf8");
-const INCLUDE_PATTERN = /\<include src=\"(.+)\"\/?\>(?:\<\/include\>)?/gi;
-const processNestedHtml = (content, loaderContext) => !INCLUDE_PATTERN.test(content) ?
-  content : content.replace(INCLUDE_PATTERN, (m, src) => processNestedHtml(fs.readFileSync(path.resolve(loaderContext.context, src), 'utf8'), loaderContext));
-
 module.exports = {
-  entry: "./src/index.js",
+  mode: 'development',
+
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    path: path.resolve(__dirname, 'dist'),
     clean: true,
-    publicPath: ''
   },
-  devServer: {
-    static: path.resolve(__dirname, './dist'),
-    compress: true,
-    hot: true, // Enable Hot Module Replacement
-    port: 8080,
-    open: true
-  },
+
+  plugins: [
+    new HtmlBundlerPlugin({
+      entry: [
+        ...fs.readdirSync("./src/content").map((file) => {
+              const mdContent = fs.readFileSync(`./src/content/${file}`, "utf8");
+              const { data, content } = matter(mdContent); // Extract metadata and content
+              const htmlContent = md.render(content);
+              return {
+                filename: file.replace(".md", ".html"),
+                import: `./src/templates/${data.template || "base"}.html`,
+                // template: `./src/templates/base.hbs`,
+                data: {
+                  file: `./src/content/${file}`,
+                  title: data.title || file.replace(".md", ""), // Dynamic title based on the file name
+                  content: htmlContent, // Rendered Markdown content
+                },
+              };
+            }),
+        ],
+      preprocessor: 'handlebars',
+      preprocessorOptions: {
+        partials: ['./src/templates/partials'],
+        helpers: {
+          arraySize: (array) => array.length,
+        },
+      },
+      js: {
+        // output filename of compiled JavaScript
+        filename: 'js/[name].[contenthash:8].js',
+      },
+      css: {
+        // output filename of extracted CSS
+        filename: 'css/[name].[contenthash:8].css',
+      },
+    }),
+  ],
+
   module: {
     rules: [
       {
-        test: /\.js$/, // Match .js files
-        exclude: /node_modules/, // Exclude dependencies
-        use: {
-            loader: "babel-loader",
-            options: {
-              presets: ["@babel/preset-env"], // Use the preset-env for modern JS
-            },
-        },
+        test: /\.(css)$/,
+        use: ['css-loader'],
       },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, {
-          loader: 'css-loader',
-          options: { importLoaders: 1 }
+        test: /\.(ico|png|jp?g|svg)/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[name].[hash:8][ext]',
         },
-        'postcss-loader']
       },
-      {
-        test: /\.html$/,
-        use: {
-          loader: 'html-loader',
-          options: {
-            preprocessor: processNestedHtml
-          }
-        }
-      }
-
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    ...fs.readdirSync("./src/content").map((file) => {
-      const mdContent = fs.readFileSync(`./src/content/${file}`, "utf8");
-      const { data, content } = matter(mdContent); // Extract metadata and content
-      const htmlContent = md.render(content);
-      return new HtmlWebpackPlugin({
-        filename: file.replace(".md", ".html"),
-        template: `./src/templates/${data.template || "base"}.html`,
-        title: data.title || file.replace(".md", ""), // Dynamic title based on the file name
-        content: htmlContent, // Rendered Markdown content
-        templateParameters: {
-          foo: "bar",
-        },
-      });
-    }),
-    new MiniCssExtractPlugin(),
-  ],
-  mode: "production",
+
+  // enable HMR with live reload
+  devServer: {
+    static: path.resolve(__dirname, 'dist'),
+    watchFiles: {
+      paths: ['src/**/*.*'],
+      options: {
+        usePolling: true,
+      },
+    },
+  },
 };

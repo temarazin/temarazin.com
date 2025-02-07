@@ -1,19 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <title><%= htmlWebpackPlugin.options.title %></title>
-    <%= require('html-loader!../chunks/head.html').default %>
+    <title>{{ title }}</title>
+
+
+    <!-- relative path to SCSS source file -->
+    <link href="../assets/css/index.css" rel="stylesheet" />
+    <!-- relative path to JS source file -->
+    <script src="../assets/js/main.js" defer="defer"></script>
+    {{> head }}
   </head>
   <body>
-    <header class="header">
-      <h1>Work in progress</h1>
-      <%= require('html-loader!../chunks/menu.html').default %>
-    </header>
-    <main><%= htmlWebpackPlugin.options.content %></main>
-    <footer>
-      <%= foo %>
-      <include src="../chunks/footer.html"/>
-      <%= require('html-loader!../chunks/footer.html').default %>
-    </footer>
+    <h1>Hello World!</h1>
+    <!-- relative path to image source file -->
+    {{{ content }}}
+
+    {{> footer }}
   </body>
 </html>
