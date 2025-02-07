@@ -3,7 +3,6 @@ const fs = require("fs");
 const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const MarkdownIt = require("markdown-it");
 const matter = require("gray-matter");
-const Handlebars = require("handlebars")
 
 const md = new MarkdownIt();
 
@@ -18,24 +17,22 @@ module.exports = {
   plugins: [
     new HtmlBundlerPlugin({
       entry: [
-        ...fs.readdirSync("./src/content").map((file) => {
-              const mdContent = fs.readFileSync(`./src/content/${file}`, "utf8");
-              const { data, content } = matter(mdContent); // Extract metadata and content
-              const htmlContent = md.render(content);
-              return {
-                filename: file.replace(".md", ".html"),
-                import: `./src/templates/${data.template || "base"}.html`,
-                // template: `./src/templates/base.hbs`,
-                data: {
-                  file: `./src/content/${file}`,
-                  title: data.title || file.replace(".md", ""), // Dynamic title based on the file name
-                  content: htmlContent, // Rendered Markdown content
-                },
-              };
-            }),
-        ],
+        {
+          filename: 'index.html',
+          import: './src/templates/base.html',
+          data: {
+            title: 'Home Page',
+            // the Bundler Plugin supports the include a *.md file directly in your template, just provide here the path to MD file
+            mdFile: './index.md', // path to the markdown file relative to one of the paths specified in the `preprocessorOptions.views` option
+          },
+        },
+      ],
       preprocessor: 'handlebars',
       preprocessorOptions: {
+        views: [
+          './src/content',
+          './src/templates',
+        ],
         partials: ['./src/templates/partials'],
         helpers: {
           arraySize: (array) => array.length,
@@ -48,6 +45,9 @@ module.exports = {
       css: {
         // output filename of extracted CSS
         filename: 'css/[name].[contenthash:8].css',
+      },
+      watchFiles: {
+        includes: /\.md/, // watch changes in *.md files, needed for live reload
       },
     }),
   ],

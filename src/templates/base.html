@@ -2,6 +2,8 @@
   <head>
     <title>{{ title }}</title>
 
+    <!-- Load PrismJS styles of Highlighting from installed `prismjs` package -->
+    <link href='prismjs/themes/prism-dark.min.css' rel='stylesheet' />
 
     <!-- relative path to SCSS source file -->
     <link href="../assets/css/index.css" rel="stylesheet" />
@@ -14,6 +16,9 @@
     <h1>Hello World!</h1>
     <!-- relative path to image source file -->
     {{{ content }}}
+
+    <!-- Load Markdown `mdFile` defined in the HTML bundler plugin option -->
+    {{include mdFile}}
 
     {{> footer }}
   </body>
