@@ -1,5 +1,78 @@
-* {
-    background-color: #222;
-    font-family: "Roboto Mono";
-    color: #e0e0e0;
+/* Page */
+.page {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background-color: #222;
+  font-family: "Roboto Mono";
+  color: #e0e0e0;
+}
+
+.page__header {
+  padding: 8px 20px;
+}
+
+.page__main {
+  flex: 1 1;
+}
+
+/* Header */
+
+.header {
+  border-bottom: 1px solid #000;
+  outline: 1px solid #444;
+}
+
+.header__inner {
+  max-width: 980px;
+  padding: 8px 20px;
+  margin: 0 auto;
+}
+
+/* Content */
+
+.content__inner {
+  max-width: 980px;
+  padding: 8px 20px;
+  margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+  background-color: #000;
+}
+
+.footer__inner {
+  max-width: 980px;
+  padding: 8px 20px;
+  margin: 0 auto;
+}
+
+.footer__text {
+  padding: 0;
+  margin: 0;
+  font-size: smaller;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Mainmenu */
+
+.mainmenu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mainmenu__link {
+  color: #a0a0ff;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.mainmenu__link:hover {
+  color: #6060bf;
 }
