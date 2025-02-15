@@ -1,6 +1,6 @@
 main:
   title: "Home"
-  url: "/index.html"
+  url: "./index.html"
 about:
   title: "About"
-  url: "/about.html"
+  url: "./about.html"
