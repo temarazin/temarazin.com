@@ -18,3 +18,4 @@ I used the next stack to built this site:
 - Building pages based on markdown files
 - Page templates
 - Partial html
+- Supporting YAML configs

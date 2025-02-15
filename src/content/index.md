@@ -3,6 +3,6 @@ template: base
 title: Home Page
 ---
 
-# Welcome to My Home page
+# Artem Malyshev
+*Frontend Developer*
 
-Hello there! This is a main page.

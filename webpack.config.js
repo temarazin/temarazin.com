@@ -3,8 +3,16 @@ const fs = require("fs");
 const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const MarkdownIt = require("markdown-it");
 const matter = require("gray-matter");
+const yaml = require('js-yaml');
 
+const CONFIG_DIR = './src/config';
 const md = new MarkdownIt();
+
+const config =
+  fs.readdirSync(CONFIG_DIR).reduce((acc, file) => ({
+    ...acc,
+    [path.basename(file, '.yml')]: yaml.load(fs.readFileSync(`${CONFIG_DIR}/${file}`, 'utf8'))
+  }), {})
 
 module.exports = {
   mode: 'development',
@@ -28,6 +36,9 @@ module.exports = {
                   file: `./src/content/${file}`,
                   title: data.title || file.replace(".md", ""),
                   content: htmlContent,
+                  config: config,
+                  // menu: menu,
+                  foo: "bar",
                 },
               };
             }),
@@ -60,10 +71,14 @@ module.exports = {
           filename: 'img/[name].[hash:8][ext]',
         },
       },
+      {
+        test: /\.ya?ml$/,
+        type: 'json',
+        use: 'yaml-loader',
+      },
     ],
   },
 
-  // enable HMR with live reload
   devServer: {
     static: path.resolve(__dirname, 'dist'),
     watchFiles: {
