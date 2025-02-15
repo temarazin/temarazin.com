@@ -59,6 +59,11 @@
   text-align: center;
 }
 
+.footer__link {
+  text-decoration: none;
+  color: #6060bf;
+}
+
 /* Mainmenu */
 
 .mainmenu {
@@ -77,4 +82,30 @@
 
 .mainmenu__link:hover {
   color: #6060bf;
+}
+
+/* Skills */
+
+.skills {
+  display: flex;
+  justify-content: center;
+}
+
+/* md-content */
+
+.md-content h1 {
+  margin: 0 0 15px;
+}
+
+.md-content p {
+  margin: 15px 0;
+}
+
+.md-content a {
+  color: #a0a0ff;
+  text-decoration: none;
+}
+
+.md-content a:hover {
+  text-decoration: underline;
 }

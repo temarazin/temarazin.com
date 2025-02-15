@@ -6,7 +6,7 @@ const matter = require("gray-matter");
 const yaml = require('js-yaml');
 
 const CONFIG_DIR = './src/config';
-const md = new MarkdownIt();
+const md = new MarkdownIt({html: true});
 
 const config =
   fs.readdirSync(CONFIG_DIR).reduce((acc, file) => ({
